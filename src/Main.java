@@ -24,11 +24,13 @@ public class Main {
         JTextField xTextField = new JTextField(5);
         JLabel yLabel = new JLabel("Y:");
         JTextField yTextField = new JTextField(5);
+        JButton addPointButton = new JButton("Add Point");
 
         inputPanel.add(xLabel);
         inputPanel.add(xTextField);
         inputPanel.add(yLabel);
         inputPanel.add(yTextField);
+        inputPanel.add(addPointButton);
 
         frame.add(inputPanel, BorderLayout.NORTH);
     }
