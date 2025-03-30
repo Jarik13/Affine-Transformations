@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 
 public class Main {
@@ -13,5 +14,22 @@ public class Main {
     }
 
     private static void initializeUI(JFrame frame) {
+        initializeInputPanel(frame);
+    }
+
+    private static void initializeInputPanel(JFrame frame) {
+        JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        JLabel xLabel = new JLabel("X:");
+        JTextField xTextField = new JTextField(5);
+        JLabel yLabel = new JLabel("Y:");
+        JTextField yTextField = new JTextField(5);
+
+        inputPanel.add(xLabel);
+        inputPanel.add(xTextField);
+        inputPanel.add(yLabel);
+        inputPanel.add(yTextField);
+
+        frame.add(inputPanel, BorderLayout.NORTH);
     }
 }
