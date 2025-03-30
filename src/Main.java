@@ -1,5 +1,6 @@
+import panels.CartesianCoordinatePanel;
+
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 
 public class Main {
@@ -15,6 +16,7 @@ public class Main {
 
     private static void initializeUI(JFrame frame) {
         initializeInputPanel(frame);
+        initializeCartesianCoordinatePanel(frame);
     }
 
     private static void initializeInputPanel(JFrame frame) {
@@ -33,5 +35,10 @@ public class Main {
         inputPanel.add(addPointButton);
 
         frame.add(inputPanel, BorderLayout.NORTH);
+    }
+
+    private static void initializeCartesianCoordinatePanel(JFrame frame) {
+        CartesianCoordinatePanel coordinatePanel = new CartesianCoordinatePanel();
+        frame.add(coordinatePanel, BorderLayout.CENTER);
     }
 }
