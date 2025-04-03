@@ -85,6 +85,17 @@ public class Main {
             }
         });
 
+        playAnimationButton.addActionListener(e -> {
+            try {
+                double scale = Double.parseDouble(scaleTriangleTextField.getText());
+                manager.setScaleFactor(scale);
+                manager.startAnimation(coordinatePanel);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Please enter a valid number for scale factor.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        stopAnimationButton.addActionListener(e -> manager.stopAnimation());
+
         clearPanelButton.addActionListener(e -> {
             manager.clearPoints();
             coordinatePanel.refresh();
