@@ -3,8 +3,6 @@ import panels.CartesianCoordinatePanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Point2D;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -35,6 +33,8 @@ public class Main {
         JTextField yTextField = new JTextField(5);
         JButton addPointButton = new JButton("Add Point");
         JButton setReflectionPointButton = new JButton("Set Reflection Point");
+        JLabel scaleTriangleLabel = new JLabel("Scale:");
+        JTextField scaleTriangleTextField = new JTextField(5);
         JButton generateAffineTransformationButton = new JButton("Generate Affine Transformation");
         JButton clearPanelButton = new JButton("Clear");
 
@@ -44,6 +44,8 @@ public class Main {
         inputPanel.add(yTextField);
         inputPanel.add(addPointButton);
         inputPanel.add(setReflectionPointButton);
+        inputPanel.add(scaleTriangleLabel);
+        inputPanel.add(scaleTriangleTextField);
         inputPanel.add(generateAffineTransformationButton);
         inputPanel.add(clearPanelButton);
 
@@ -70,9 +72,7 @@ public class Main {
         });
 
         generateAffineTransformationButton.addActionListener(e -> {
-            List<Point2D.Double> reflectedPoints = manager.generateReflectedTriangle();
-            manager.setReflectedPoints(reflectedPoints);
-            coordinatePanel.refresh();
+            manager.generateReflectedTriangleWithAnimation(coordinatePanel);
         });
 
         clearPanelButton.addActionListener(e -> {

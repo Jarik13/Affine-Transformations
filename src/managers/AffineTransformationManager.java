@@ -9,6 +9,7 @@ public class AffineTransformationManager {
     private List<Point2D.Double> currentPoints = new ArrayList<>();
     private List<Point2D.Double> reflectedPoints = new ArrayList<>();
     private Point2D.Double reflectionPoint;
+    private boolean isAnimating = false;
 
     public void addPoint(double x, double y) {
         if (currentPoints.size() >= 3) {
@@ -22,6 +23,7 @@ public class AffineTransformationManager {
 
     public void clearPoints() {
         currentPoints.clear();
+        reflectedPoints.clear();
     }
 
     public List<Point2D.Double> getPoints() {
@@ -36,26 +38,28 @@ public class AffineTransformationManager {
         return reflectionPoint;
     }
 
-    public List<Point2D.Double> generateReflectedTriangle() {
-        reflectedPoints.clear();
+    public void generateReflectedTriangleWithAnimation(final JPanel panel) {
         if (reflectionPoint == null) {
             SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null,
                     "Reflection point is not set. Please set a reflection point first.",
                     "Error", JOptionPane.ERROR_MESSAGE));
-            return reflectedPoints;
+            return;
         }
 
-        for (Point2D.Double point : currentPoints) {
-            double reflectedX = 2 * reflectionPoint.x - point.x;
-            double reflectedY = 2 * reflectionPoint.y - point.y;
-            reflectedPoints.add(new Point2D.Double(reflectedX, reflectedY));
-        }
-
-        return reflectedPoints;
-    }
-
-    public void setReflectedPoints(List<Point2D.Double> reflectedPoints) {
-        this.reflectedPoints = reflectedPoints;
+        isAnimating = true;
+        Timer timer = new Timer(30, e -> {
+            if (reflectedPoints.size() < currentPoints.size()) {
+                Point2D.Double point = currentPoints.get(reflectedPoints.size());
+                double reflectedX = 2 * reflectionPoint.x - point.x;
+                double reflectedY = 2 * reflectionPoint.y - point.y;
+                reflectedPoints.add(new Point2D.Double(reflectedX, reflectedY));
+                panel.repaint();
+            } else {
+                ((Timer) e.getSource()).stop();
+                isAnimating = false;
+            }
+        });
+        timer.start();
     }
 
     public List<Point2D.Double> getReflectedPoints() {
