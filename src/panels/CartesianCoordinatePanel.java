@@ -1,12 +1,19 @@
 package panels;
 
+import managers.AffineTransformationManager;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
+import java.util.List;
 
 public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
+    private AffineTransformationManager manager;
 
-    public CartesianCoordinatePanel() {
+    public CartesianCoordinatePanel(AffineTransformationManager manager) {
+        this.manager = manager;
         addMouseWheelListener(e -> {
             int rotation = e.getWheelRotation();
             if (rotation < 0) {
@@ -42,6 +49,7 @@ public class CartesianCoordinatePanel extends JPanel {
         g2d.drawString("Y", centerX + 5, 15);
 
         drawGrid(g2d, width, height, centerX, centerY);
+        drawPoints(g2d, centerX, centerY);
     }
 
     private void drawArrow(Graphics2D g2d, int x, int y, boolean isXAxis) {
@@ -75,5 +83,20 @@ public class CartesianCoordinatePanel extends JPanel {
             g2d.drawLine(centerX - 5, y, centerX + 5, y);
             g2d.drawString(String.valueOf((centerY - y) / scale), centerX + 10, y + 5);
         }
+    }
+
+    private void drawPoints(Graphics2D g2d, int centerX, int centerY) {
+        List<Point2D.Double> points = manager.getPoints();
+        g2d.setColor(Color.RED);
+
+        for (Point2D.Double point : points) {
+            int x = centerX + (int) (point.x * scale) - 3;
+            int y = centerY - (int) (point.y * scale) - 3;
+            g2d.fill(new Ellipse2D.Double(x, y, 6, 6));
+        }
+    }
+
+    public void refresh() {
+        repaint();
     }
 }
