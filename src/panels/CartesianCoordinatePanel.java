@@ -50,6 +50,7 @@ public class CartesianCoordinatePanel extends JPanel {
 
         drawGrid(g2d, width, height, centerX, centerY);
         drawPoints(g2d, centerX, centerY);
+        drawTriangle(g2d, centerX, centerY);
     }
 
     private void drawArrow(Graphics2D g2d, int x, int y, boolean isXAxis) {
@@ -93,6 +94,24 @@ public class CartesianCoordinatePanel extends JPanel {
             int x = centerX + (int) (point.x * scale) - 3;
             int y = centerY - (int) (point.y * scale) - 3;
             g2d.fill(new Ellipse2D.Double(x, y, 6, 6));
+        }
+    }
+
+    private void drawTriangle(Graphics2D g2d, int centerX, int centerY) {
+        List<Point2D.Double> points = manager.getPoints();
+        if (points.size() == 3) {
+            g2d.setColor(Color.BLUE);
+            g2d.setStroke(new BasicStroke(2));
+
+            int[] xPoints = new int[3];
+            int[] yPoints = new int[3];
+
+            for (int i = 0; i < 3; i++) {
+                xPoints[i] = centerX + (int) (points.get(i).x * scale);
+                yPoints[i] = centerY - (int) (points.get(i).y * scale);
+            }
+
+            g2d.drawPolygon(xPoints, yPoints, 3);
         }
     }
 
