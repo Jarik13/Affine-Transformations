@@ -11,6 +11,7 @@ import java.util.List;
 public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
     private AffineTransformationManager manager;
+    private boolean isAffineTransformationGenerated = false;
 
     public CartesianCoordinatePanel(AffineTransformationManager manager) {
         this.manager = manager;
@@ -88,7 +89,7 @@ public class CartesianCoordinatePanel extends JPanel {
 
     private void drawPoints(Graphics2D g2d, int centerX, int centerY) {
         List<Point2D.Double> points = manager.getPoints();
-        g2d.setColor(Color.RED);
+        g2d.setColor(Color.BLACK);
 
         for (Point2D.Double point : points) {
             int x = centerX + (int) (point.x * scale) - 3;
@@ -100,8 +101,10 @@ public class CartesianCoordinatePanel extends JPanel {
     private void drawTriangle(Graphics2D g2d, int centerX, int centerY) {
         List<Point2D.Double> points = manager.getPoints();
         if (points.size() == 3) {
-            g2d.setColor(Color.BLUE);
-            g2d.setStroke(new BasicStroke(2));
+            g2d.setColor(Color.LIGHT_GRAY);
+
+            float[] dashPattern = {5, 5};
+            g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, dashPattern, 0));
 
             int[] xPoints = new int[3];
             int[] yPoints = new int[3];
@@ -113,6 +116,11 @@ public class CartesianCoordinatePanel extends JPanel {
 
             g2d.drawPolygon(xPoints, yPoints, 3);
         }
+    }
+
+    public void setAffineTransformationGenerated(boolean generated) {
+        this.isAffineTransformationGenerated = generated;
+        repaint();
     }
 
     public void refresh() {
