@@ -3,6 +3,8 @@ import panels.CartesianCoordinatePanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Point2D;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -65,6 +67,12 @@ public class Main {
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame, "Please enter valid numbers for X and Y.", "Input Error", JOptionPane.ERROR_MESSAGE);
             }
+        });
+
+        generateAffineTransformationButton.addActionListener(e -> {
+            List<Point2D.Double> reflectedPoints = manager.generateReflectedTriangle();
+            manager.setReflectedPoints(reflectedPoints);
+            coordinatePanel.refresh();
         });
 
         clearPanelButton.addActionListener(e -> {

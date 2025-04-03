@@ -52,6 +52,7 @@ public class CartesianCoordinatePanel extends JPanel {
         drawPoints(g2d, centerX, centerY);
         drawTriangle(g2d, centerX, centerY);
         drawReflectionPoint(g2d, centerX, centerY);
+        drawReflectedPoints(g2d, centerX, centerY);
     }
 
     private void drawArrow(Graphics2D g2d, int x, int y, boolean isXAxis) {
@@ -125,6 +126,34 @@ public class CartesianCoordinatePanel extends JPanel {
             int x = centerX + (int) (reflectionPoint.x * scale) - 4;
             int y = centerY - (int) (reflectionPoint.y * scale) - 4;
             g2d.fill(new Ellipse2D.Double(x, y, 8, 8));
+        }
+    }
+
+    private void drawReflectedPoints(Graphics2D g2d, int centerX, int centerY) {
+        List<Point2D.Double> reflectedPoints = manager.getReflectedPoints();
+        g2d.setColor(Color.BLACK);
+
+        for (Point2D.Double point : reflectedPoints) {
+            int x = centerX + (int) (point.x * scale) - 3;
+            int y = centerY - (int) (point.y * scale) - 3;
+            g2d.fill(new Ellipse2D.Double(x, y, 6, 6));
+        }
+
+        if (reflectedPoints.size() == 3) {
+            g2d.setColor(Color.GRAY);
+
+            float[] dashPattern = {5, 5};
+            g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, dashPattern, 0));
+
+            int[] xPoints = new int[3];
+            int[] yPoints = new int[3];
+
+            for (int i = 0; i < 3; i++) {
+                xPoints[i] = centerX + (int) (reflectedPoints.get(i).x * scale);
+                yPoints[i] = centerY - (int) (reflectedPoints.get(i).y * scale);
+            }
+
+            g2d.drawPolygon(xPoints, yPoints, 3);
         }
     }
 
