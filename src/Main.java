@@ -27,12 +27,14 @@ public class Main {
         JLabel yLabel = new JLabel("Y:");
         JTextField yTextField = new JTextField(5);
         JButton addPointButton = new JButton("Add Point");
+        JButton centerPointButton = new JButton("Set Center Point");
 
         inputPanel.add(xLabel);
         inputPanel.add(xTextField);
         inputPanel.add(yLabel);
         inputPanel.add(yTextField);
         inputPanel.add(addPointButton);
+        inputPanel.add(centerPointButton);
 
         frame.add(inputPanel, BorderLayout.NORTH);
     }
