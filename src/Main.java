@@ -33,6 +33,7 @@ public class Main {
         JTextField yTextField = new JTextField(5);
         JButton addPointButton = new JButton("Add Point");
         JButton setCenterPointButton = new JButton("Set Center Point");
+        JButton clearPanelButton = new JButton("Clear");
 
         inputPanel.add(xLabel);
         inputPanel.add(xTextField);
@@ -40,6 +41,7 @@ public class Main {
         inputPanel.add(yTextField);
         inputPanel.add(addPointButton);
         inputPanel.add(setCenterPointButton);
+        inputPanel.add(clearPanelButton);
 
         addPointButton.addActionListener(e -> {
             try {
@@ -50,6 +52,11 @@ public class Main {
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame, "Please enter valid numbers for X and Y.", "Input Error", JOptionPane.ERROR_MESSAGE);
             }
+        });
+
+        clearPanelButton.addActionListener(e -> {
+            manager.clearPoints();
+            coordinatePanel.refresh();
         });
 
         frame.add(inputPanel, BorderLayout.NORTH);
