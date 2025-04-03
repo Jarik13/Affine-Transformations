@@ -32,7 +32,7 @@ public class Main {
         JLabel yLabel = new JLabel("Y:");
         JTextField yTextField = new JTextField(5);
         JButton addPointButton = new JButton("Add Point");
-        JButton setCenterPointButton = new JButton("Set Center Point");
+        JButton setReflectionPointButton = new JButton("Set Reflection Point");
         JButton clearPanelButton = new JButton("Clear");
 
         inputPanel.add(xLabel);
@@ -40,7 +40,7 @@ public class Main {
         inputPanel.add(yLabel);
         inputPanel.add(yTextField);
         inputPanel.add(addPointButton);
-        inputPanel.add(setCenterPointButton);
+        inputPanel.add(setReflectionPointButton);
         inputPanel.add(clearPanelButton);
 
         addPointButton.addActionListener(e -> {
@@ -48,6 +48,17 @@ public class Main {
                 double x = Double.parseDouble(xTextField.getText());
                 double y = Double.parseDouble(yTextField.getText());
                 manager.addPoint(x, y);
+                coordinatePanel.refresh();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Please enter valid numbers for X and Y.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        setReflectionPointButton.addActionListener(e -> {
+            try {
+                double x = Double.parseDouble(xTextField.getText());
+                double y = Double.parseDouble(yTextField.getText());
+                manager.setReflectionPoint(x, y);
                 coordinatePanel.refresh();
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame, "Please enter valid numbers for X and Y.", "Input Error", JOptionPane.ERROR_MESSAGE);

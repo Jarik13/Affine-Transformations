@@ -11,7 +11,6 @@ import java.util.List;
 public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
     private AffineTransformationManager manager;
-    private boolean isAffineTransformationGenerated = false;
 
     public CartesianCoordinatePanel(AffineTransformationManager manager) {
         this.manager = manager;
@@ -52,6 +51,7 @@ public class CartesianCoordinatePanel extends JPanel {
         drawGrid(g2d, width, height, centerX, centerY);
         drawPoints(g2d, centerX, centerY);
         drawTriangle(g2d, centerX, centerY);
+        drawReflectionPoint(g2d, centerX, centerY);
     }
 
     private void drawArrow(Graphics2D g2d, int x, int y, boolean isXAxis) {
@@ -118,9 +118,14 @@ public class CartesianCoordinatePanel extends JPanel {
         }
     }
 
-    public void setAffineTransformationGenerated(boolean generated) {
-        this.isAffineTransformationGenerated = generated;
-        repaint();
+    private void drawReflectionPoint(Graphics2D g2d, int centerX, int centerY) {
+        Point2D.Double reflectionPoint = manager.getReflectionPoint();
+        if (reflectionPoint != null) {
+            g2d.setColor(Color.RED);
+            int x = centerX + (int) (reflectionPoint.x * scale) - 4;
+            int y = centerY - (int) (reflectionPoint.y * scale) - 4;
+            g2d.fill(new Ellipse2D.Double(x, y, 8, 8));
+        }
     }
 
     public void refresh() {

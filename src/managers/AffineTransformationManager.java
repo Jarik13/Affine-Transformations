@@ -7,6 +7,7 @@ import java.util.List;
 
 public class AffineTransformationManager {
     private List<Point2D.Double> currentPoints = new ArrayList<>();
+    private Point2D.Double reflectionPoint;
 
     public void addPoint(double x, double y) {
         if (currentPoints.size() >= 3) {
@@ -24,5 +25,13 @@ public class AffineTransformationManager {
 
     public List<Point2D.Double> getPoints() {
         return currentPoints;
+    }
+
+    public void setReflectionPoint(double x, double y) {
+        this.reflectionPoint = new Point2D.Double(x, y);
+    }
+
+    public Point2D.Double getReflectionPoint() {
+        return reflectionPoint;
     }
 }
