@@ -50,10 +50,6 @@ public class AffineTransformationManager {
         initializeScaleMatrix();
     }
 
-    public double getScaleFactor() {
-        return scaleFactor;
-    }
-
     public void generateReflectedTriangleWithAnimation(final JPanel panel) {
         if (reflectionPoint == null) {
             SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null,
@@ -62,23 +58,21 @@ public class AffineTransformationManager {
             return;
         }
 
-        isAnimating = true;
-        Timer timer = new Timer(30, e -> {
-            if (reflectedPoints.size() < currentPoints.size()) {
-                Point2D.Double point = currentPoints.get(reflectedPoints.size());
-                double scaledX = point.x * scaleMatrix[0][0];
-                double scaledY = point.y * scaleMatrix[1][1];
+        clearReflectedPoints();
 
-                double reflectedX = 2 * reflectionPoint.x - scaledX;
-                double reflectedY = 2 * reflectionPoint.y - scaledY;
-                reflectedPoints.add(new Point2D.Double(reflectedX, reflectedY));
-                panel.repaint();
-            } else {
-                ((Timer) e.getSource()).stop();
-                isAnimating = false;
-            }
-        });
-        timer.start();
+        for (Point2D.Double point : currentPoints) {
+            double reflectedX = 2 * reflectionPoint.x - point.x;
+            double reflectedY = 2 * reflectionPoint.y - point.y;
+
+            double dx = reflectedX - reflectionPoint.x;
+            double dy = reflectedY - reflectionPoint.y;
+
+            double scaledX = reflectionPoint.x + dx * scaleFactor;
+            double scaledY = reflectionPoint.y + dy * scaleFactor;
+            reflectedPoints.add(new Point2D.Double(scaledX, scaledY));
+        }
+
+        panel.repaint();
     }
 
     public List<Point2D.Double> getReflectedPoints() {
@@ -89,5 +83,9 @@ public class AffineTransformationManager {
         scaleMatrix[0][0] = scaleFactor;
         scaleMatrix[1][1] = scaleFactor;
         scaleMatrix[2][2] = 1.0;
+    }
+
+    public void clearReflectedPoints() {
+        reflectedPoints.clear();
     }
 }
