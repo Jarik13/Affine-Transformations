@@ -33,6 +33,7 @@ public class Main {
         JTextField yTextField = new JTextField(5);
         JButton addPointButton = new JButton("Add Point");
         JButton setReflectionPointButton = new JButton("Set Reflection Point");
+        JButton generateAffineTransformationButton = new JButton("Generate Affine Transformation");
         JButton clearPanelButton = new JButton("Clear");
 
         inputPanel.add(xLabel);
@@ -41,6 +42,7 @@ public class Main {
         inputPanel.add(yTextField);
         inputPanel.add(addPointButton);
         inputPanel.add(setReflectionPointButton);
+        inputPanel.add(generateAffineTransformationButton);
         inputPanel.add(clearPanelButton);
 
         addPointButton.addActionListener(e -> {
