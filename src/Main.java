@@ -36,6 +36,8 @@ public class Main {
         JLabel scaleTriangleLabel = new JLabel("Scale:");
         JTextField scaleTriangleTextField = new JTextField(5);
         JButton generateAffineTransformationButton = new JButton("Generate Affine Transformation");
+        JButton playAnimationButton = new JButton("Play Animation");
+        JButton stopAnimationButton = new JButton("Stop Animation");
         JButton clearPanelButton = new JButton("Clear");
 
         inputPanel.add(xLabel);
@@ -48,6 +50,8 @@ public class Main {
         inputPanel.add(scaleTriangleTextField);
         inputPanel.add(generateAffineTransformationButton);
         inputPanel.add(clearPanelButton);
+        inputPanel.add(playAnimationButton);
+        inputPanel.add(stopAnimationButton);
 
         addPointButton.addActionListener(e -> {
             try {
