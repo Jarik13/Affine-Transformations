@@ -72,7 +72,13 @@ public class Main {
         });
 
         generateAffineTransformationButton.addActionListener(e -> {
-            manager.generateReflectedTriangleWithAnimation(coordinatePanel);
+            try {
+                double scale = Double.parseDouble(scaleTriangleTextField.getText());
+                manager.setScaleFactor(scale);
+                manager.generateReflectedTriangleWithAnimation(coordinatePanel);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Please enter a valid number for scale factor.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         clearPanelButton.addActionListener(e -> {
