@@ -2,6 +2,9 @@ package managers;
 
 import javax.swing.*;
 import java.awt.geom.Point2D;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,6 +156,23 @@ public class AffineTransformationManager {
     public void continueAnimation() {
         if (isPaused) {
             isPaused = false;
+        }
+    }
+
+    public void saveTransformMatrixToFile(String filePath) {
+        double[][] matrix = getTransformMatrix();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write("Affine Transformation Matrix:\n");
+            for (double[] row : matrix) {
+                for (double val : row) {
+                    writer.write(String.format("%10.4f ", val));
+                }
+                writer.newLine();
+            }
+            writer.flush();
+            System.out.println("Matrix saved to: " + filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

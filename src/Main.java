@@ -84,6 +84,7 @@ public class Main {
                 double scale = Double.parseDouble(scaleTriangleTextField.getText());
                 manager.setScaleFactor(scale);
                 manager.generateReflectedTriangleWithAnimation(coordinatePanel);
+                manager.saveTransformMatrixToFile("transform_matrix.txt");
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Please enter a valid number for scale factor.", "Input Error", JOptionPane.ERROR_MESSAGE);
             }
