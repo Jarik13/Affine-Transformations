@@ -8,15 +8,17 @@ import java.util.List;
 public class AffineTransformationManager {
     private List<Point2D.Double> currentPoints = new ArrayList<>();
     private List<Point2D.Double> reflectedPoints = new ArrayList<>();
+    private List<Point2D.Double> currentAnimationStartPoints = new ArrayList<>();
     private Point2D.Double reflectionPoint;
     private double scaleFactor = 1.0;
-    private double rotationAngle = 0.0;
     private volatile boolean isAnimating = false;
+    private volatile boolean isPaused = false;
+    private Thread animationThread;
 
     public void addPoint(double x, double y) {
         if (currentPoints.size() >= 3) {
             SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null,
-                    "You cannot add more than three points. Please generate affine transformation before.!",
+                    "You cannot add more than three points. Please generate affine transformation before!",
                     "Error", JOptionPane.ERROR_MESSAGE));
             return;
         }
@@ -54,39 +56,11 @@ public class AffineTransformationManager {
         }
 
         clearReflectedPoints();
-
-        double[][] translationToOrigin = {
-                {1, 0, -reflectionPoint.x},
-                {0, 1, -reflectionPoint.y},
-                {0, 0, 1}
-        };
-
-        double[][] reflectionMatrix = {
-                {-1, 0, 0},
-                {0, -1, 0},
-                {0, 0, 1}
-        };
-
-        double[][] scalingMatrix = {
-                {scaleFactor, 0, 0},
-                {0, scaleFactor, 0},
-                {0, 0, 1}
-        };
-
-        double[][] translationBack = {
-                {1, 0, reflectionPoint.x},
-                {0, 1, reflectionPoint.y},
-                {0, 0, 1}
-        };
-
-        double[][] transformMatrix = multiplyMatrices(translationBack,
-                multiplyMatrices(scalingMatrix,
-                        multiplyMatrices(reflectionMatrix, translationToOrigin)));
+        double[][] transformMatrix = getTransformMatrix();
 
         for (Point2D.Double point : currentPoints) {
             double[] pointVector = {point.x, point.y, 1};
             double[] transformedPoint = multiplyMatrixAndVector(transformMatrix, pointVector);
-
             reflectedPoints.add(new Point2D.Double(transformedPoint[0], transformedPoint[1]));
         }
 
@@ -105,12 +79,84 @@ public class AffineTransformationManager {
             return;
         }
 
-        if (currentPoints.isEmpty()) return;
+        if (currentPoints.isEmpty() || isAnimating) return;
 
         isAnimating = true;
-        reflectedPoints.clear();
-        List<Point2D.Double> finalPoints = new ArrayList<>();
+        isPaused = false;
 
+        currentAnimationStartPoints.clear();
+        reflectedPoints.clear();
+        for (Point2D.Double p : currentPoints) {
+            currentAnimationStartPoints.add((Point2D.Double) p.clone());
+            reflectedPoints.add((Point2D.Double) p.clone());
+        }
+
+        double[][] transformMatrix = getTransformMatrix();
+        List<Point2D.Double> finalPoints = new ArrayList<>();
+        for (Point2D.Double point : currentPoints) {
+            double[] transformed = multiplyMatrixAndVector(transformMatrix, new double[]{point.x, point.y, 1});
+            finalPoints.add(new Point2D.Double(transformed[0], transformed[1]));
+        }
+
+        animationThread = new Thread(() -> {
+            for (int i = 1; i <= 10; i++) {
+                if (!isAnimating) break;
+
+                double t = i / 10.0;
+
+                while (isPaused) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                }
+
+                synchronized (reflectedPoints) {
+                    for (int j = 0; j < reflectedPoints.size(); j++) {
+                        double x = currentAnimationStartPoints.get(j).x * (1 - t) + finalPoints.get(j).x * t;
+                        double y = currentAnimationStartPoints.get(j).y * (1 - t) + finalPoints.get(j).y * t;
+                        reflectedPoints.get(j).setLocation(x, y);
+                    }
+                }
+
+                SwingUtilities.invokeLater(panel::repaint);
+
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+
+            isAnimating = false;
+        });
+
+        animationThread.start();
+    }
+
+    public void stopAnimation() {
+        isAnimating = false;
+        isPaused = false;
+
+        if (animationThread != null && animationThread.isAlive()) {
+            animationThread.interrupt();
+        }
+
+        animationThread = null;
+    }
+
+    public void pauseAnimation() {
+        isPaused = true;
+    }
+
+    public void continueAnimation() {
+        if (isPaused) {
+            isPaused = false;
+        }
+    }
+
+    private double[][] getTransformMatrix() {
         double[][] translationToOrigin = {
                 {1, 0, -reflectionPoint.x},
                 {0, 1, -reflectionPoint.y},
@@ -135,52 +181,14 @@ public class AffineTransformationManager {
                 {0, 0, 1}
         };
 
-        double[][] transformMatrix = multiplyMatrices(translationBack,
+        return multiplyMatrices(translationBack,
                 multiplyMatrices(scalingMatrix,
                         multiplyMatrices(reflectionMatrix, translationToOrigin)));
-
-        for (Point2D.Double point : currentPoints) {
-            reflectedPoints.add(new Point2D.Double(point.x, point.y));
-
-            double[] pointVector = {point.x, point.y, 1};
-            double[] transformedPoint = multiplyMatrixAndVector(transformMatrix, pointVector);
-
-            finalPoints.add(new Point2D.Double(transformedPoint[0], transformedPoint[1]));
-        }
-
-        new Thread(() -> {
-            for (int i = 1; i <= 10; i++) {
-                if (!isAnimating) return;
-
-                double t = i / 10.0;
-
-                synchronized (reflectedPoints) {
-                    for (int j = 0; j < reflectedPoints.size(); j++) {
-                        double x = reflectedPoints.get(j).x * (1 - t) + finalPoints.get(j).x * t;
-                        double y = reflectedPoints.get(j).y * (1 - t) + finalPoints.get(j).y * t;
-                        reflectedPoints.get(j).setLocation(x, y);
-                    }
-                }
-
-                SwingUtilities.invokeLater(panel::repaint);
-
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    return;
-                }
-            }
-        }).start();
-    }
-
-    public void stopAnimation() {
-        isAnimating = false;
     }
 
     private double[][] multiplyMatrices(double[][] first, double[][] second) {
         int rows = first.length, cols = second[0].length, common = second.length;
         double[][] result = new double[rows][cols];
-
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 for (int k = 0; k < common; k++) {

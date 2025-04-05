@@ -38,6 +38,8 @@ public class Main {
         JButton generateAffineTransformationButton = new JButton("Generate Affine Transformation");
         JButton playAnimationButton = new JButton("Play Animation");
         JButton stopAnimationButton = new JButton("Stop Animation");
+        JButton continueAnimationButton = new JButton("Continue Animation");
+        JButton pauseAnimationButton = new JButton("Pause Animation");
         JButton clearPanelButton = new JButton("Clear");
 
         inputPanel.add(xLabel);
@@ -52,6 +54,8 @@ public class Main {
         inputPanel.add(clearPanelButton);
         inputPanel.add(playAnimationButton);
         inputPanel.add(stopAnimationButton);
+        inputPanel.add(continueAnimationButton);
+        inputPanel.add(pauseAnimationButton);
 
         addPointButton.addActionListener(e -> {
             try {
@@ -94,7 +98,12 @@ public class Main {
                 JOptionPane.showMessageDialog(null, "Please enter a valid number for scale factor.", "Input Error", JOptionPane.ERROR_MESSAGE);
             }
         });
+
         stopAnimationButton.addActionListener(e -> manager.stopAnimation());
+
+        continueAnimationButton.addActionListener(e -> manager.continueAnimation());
+
+        pauseAnimationButton.addActionListener(e -> manager.pauseAnimation());
 
         clearPanelButton.addActionListener(e -> {
             manager.clearPoints();
